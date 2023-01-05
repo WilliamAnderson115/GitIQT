@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace GitIQT
 {
-    internal class CloneRepo : IScenario
+    internal class CloneRepo : AbstractScenario
     {
-        private string Response = string.Empty;
-
-        private string Answer = string.Empty;
-
         // Ask user to clone a repository
-        public void AskPrompt()
+        public override void AskPrompt()
         {
             // Ask user to clone a repository
             // Get the first 5 characters of a GUID
@@ -23,45 +19,14 @@ namespace GitIQT
             var repoURL = $"https://github.com/552ODST/{repoID}/ProjectBacon.git";
             Answer = $"git clone {repoURL}";
 
-            var prompt = $"What git command do you need to type in to clone the repository located at '{repoURL}'? You can copy and paste!";
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(prompt);
-
-            GetResponses();
+            PerformGitAction($"What git command do you need to type in to clone the repository located at '{repoURL}'? You can copy and paste!");
         }
 
-        public void GetResponses()
+        public override void NextPrompt()
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-
-            Response = Console.ReadLine()?.Trim() ?? "";
-
-            if (CheckReponse())
-            {
-                NextPrompt();
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("That's not correct. Try again.");
-                GetResponses();
-            }
-        }
-
-        // Check if Prompt() was successful
-        public bool CheckReponse()
-        {
-            return Response == Answer;
-        }
-
-        public void NextPrompt()
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("That's correct! You've successfully cloned the repository.");
-
-            Console.WriteLine("Next check what branch you are on and then swap to the dev branch.");
-            //new CheckoutDev().Prompt();
+            Console.WriteLine("Next, check what branch you are on.");
+            new BranchCheck().AskPrompt();
         }
     }
 }
